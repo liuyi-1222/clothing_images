@@ -1,0 +1,23 @@
+name: 自动同步同事仓库
+on:
+  workflow_dispatch:  # 允许手动点一下同步
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 同步上游仓库
+        uses: repo-sync/github-sync@v3
+        with:
+          source_repo: xiaolishengqile/clothing_images
+          source_branch: main
+          destination_branch: main
+          github_token: ${{ secrets.PAT }}

@@ -7,16 +7,17 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
 
-      - name: 同步上游 main 分支
+      - name: 同步代码
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          git config --global user.name "Auto Sync"
+          git config --global user.email "sync@github.com"
           git remote add upstream https://${{ secrets.PAT }}@github.com/xiaolishengqile/clothing_images.git
           git fetch upstream
           git checkout main

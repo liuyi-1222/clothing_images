@@ -1,17 +1,24 @@
 name: 自动同步同事仓库
 on:
-  workflow_dispatch:  # 允许手动点一下同步
+  workflow_dispatch:
   schedule:
-    - cron: '0 * * * *' # 每小时自动同步一次
+    - cron: '0 * * * *'
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: 同步上游仓库
-        uses: wei/git-sync@v3
+      - uses: actions/checkout@v4
         with:
-          source_repo: "xiaolishengqile/clothing_images"
-          source_branch: "main"
-          destination_branch: "main"
-          github_token: ${{ secrets.PAT }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: 同步上游 main 分支
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git remote add upstream https://${{ secrets.PAT }}@github.com/xiaolishengqile/clothing_images.git
+          git fetch upstream
+          git checkout main
+          git merge upstream/main --allow-unrelated-histories
+          git push https://${{ secrets.PAT }}@github.com/liuyi-1222/clothing_images.git main
